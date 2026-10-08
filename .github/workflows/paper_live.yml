@@ -1,0 +1,103 @@
+name: MACD Paper Live
+
+on:
+  workflow_dispatch:
+
+jobs:
+
+  paper-live:
+
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 130
+
+    steps:
+
+      # ------------------------------------------------------
+      # CHECKOUT
+      # ------------------------------------------------------
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+
+      # ------------------------------------------------------
+      # PYTHON
+      # ------------------------------------------------------
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+
+      # ------------------------------------------------------
+      # DEPENDENCIES
+      # ------------------------------------------------------
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+
+      # ------------------------------------------------------
+      # SAFETY CHECK
+      # ------------------------------------------------------
+
+      - name: Verify paper-only mode
+        run: |
+          echo "=========================================="
+          echo "PAPER TRADING SAFETY CHECK"
+          echo "=========================================="
+          echo "API KEYS:    NONE"
+          echo "WALLET:      NONE"
+          echo "REAL ORDERS: DISABLED"
+          echo "MODE:        PAPER ONLY"
+          echo "=========================================="
+
+
+      # ------------------------------------------------------
+      # RUN PAPER BOT
+      # ------------------------------------------------------
+
+      - name: Run MACD Paper Live
+        run: |
+          python paper_live.py
+
+
+      # ------------------------------------------------------
+      # SHOW TRADE LOG
+      # ------------------------------------------------------
+
+      - name: Show paper trade log
+        if: always()
+        run: |
+          echo "=========================================="
+          echo "PAPER TRADE LOG"
+          echo "=========================================="
+
+          if [ -f paper_trades.json ]; then
+            cat paper_trades.json
+          else
+            echo "No paper trades were generated."
+          fi
+
+
+      # ------------------------------------------------------
+      # SHOW STATE
+      # ------------------------------------------------------
+
+      - name: Show paper state
+        if: always()
+        run: |
+          echo "=========================================="
+          echo "PAPER ACCOUNT STATE"
+          echo "=========================================="
+
+          if [ -f paper_state.json ]; then
+            cat paper_state.json
+          else
+            echo "No state file generated."
+          fi
