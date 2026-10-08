@@ -41,3 +41,7 @@ jobs:
       - name: Run integration tests
         run: |
           python test_paper.py
+
+      - name: Test live market data
+        run: |
+          python market_data.py
