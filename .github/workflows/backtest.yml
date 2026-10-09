@@ -1,5 +1,5 @@
 
-name: Historical BTC Backtest
+name: Historical BTC Backtest V2
 
 on:
   workflow_dispatch:
@@ -29,16 +29,18 @@ jobs:
       - name: Run strategy self-test
         run: python strategy.py
 
-      - name: Run six-month backtest
-        run: python backtest.py
+      - name: Run six-month V2 analysis
+        run: python backtest_v2.py
 
-      - name: Upload backtest results
+      - name: Upload V2 analysis results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: btc-backtest-results
+          name: btc-backtest-v2-results
           path: |
-            backtest_trades.csv
-            backtest_equity.csv
+            backtest_v2_trades.csv
+            backtest_v2_equity.csv
+            backtest_v2_scores.csv
+            backtest_v2_summary.txt
           if-no-files-found: warn
           retention-days: 30
